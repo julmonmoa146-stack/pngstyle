@@ -1,127 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PNGStyle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PNGStyle</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; background: #f0f2f5; }/* Header */
+header { background: #1877f2; color: #fff; padding: 12px; text-align: center; font-size: 20px; font-weight: bold; }
 
-<style>
-body{margin:0;font-family:Arial;background:#f0f2f5;}
-header{background:#1877f2;color:#fff;padding:10px;font-size:22px;font-weight:bold;}
-nav{display:flex;justify-content:space-around;background:#fff;border-bottom:1px solid #ccc;}
-nav button{border:none;background:none;padding:10px;font-size:14px;}
-.page{display:none;padding:10px;}
-.page.active{display:block;}
+/* Nav */
+nav { display: flex; justify-content: space-around; background: #fff; border-bottom: 1px solid #ddd; }
+nav button { flex: 1; padding: 10px; border: none; background: none; font-weight: bold; }
+nav button.active { color: #1877f2; border-bottom: 2px solid #1877f2; }
 
-.card{background:#fff;padding:10px;border-radius:8px;margin-bottom:10px;}
-.card img{width:100%;border-radius:6px;}
-.actions{display:flex;justify-content:space-around;border-top:1px solid #ddd;padding-top:6px;}
+/* Pages */
+.page { display: none; padding: 12px; }
+.page.active { display: block; }
 
-input,textarea{width:100%;padding:8px;margin-top:5px;margin-bottom:5px;}
-.btn{background:#1877f2;color:#fff;border:none;padding:8px;border-radius:5px;}
+/* Cards */
+.card { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
 
-.story-row{display:flex;overflow-x:auto;margin-bottom:10px;}
-.story{min-width:80px;height:120px;background:#ddd;border-radius:8px;margin-right:8px;display:flex;align-items:end;padding:5px;font-size:12px;}
+/* Post */
+.post-header { font-weight: bold; margin-bottom: 6px; }
+.post img, .post video { width: 100%; border-radius: 6px; margin-top: 8px; }
 
-.ad{background:#eee;text-align:center;padding:10px;border:1px dashed #aaa;margin:10px 0;}
-</style>
+.actions { display: flex; justify-content: space-around; margin-top: 8px; }
+.actions button { border: none; background: none; font-weight: bold; color: #555; }
+
+/* Upload */
+input, textarea { width: 100%; padding: 8px; margin-bottom: 8px; }
+.btn { background: #1877f2; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 6px; }
+
+/* Footer */
+footer { text-align: center; font-size: 12px; color: #777; padding: 10px; }
+
+  </style>
 </head>
+<body><header>PNGStyle</header><nav>
+  <button class="active" onclick="showPage('feed', this)">Home</button>
+  <button onclick="showPage('upload', this)">Upload</button>
+  <button onclick="showPage('chat', this)">Chat</button>
+  <button onclick="showPage('profile', this)">Profile</button>
+</nav><!-- FEED --><div id="feed" class="page active">
+  <div class="card post">
+    <div class="post-header">PNGStyle Admin</div>
+    <div>Welcome to PNGStyle 🇵🇬 – your independent PNG community app.</div>
+    <img src="https://via.placeholder.com/400x200" />
+    <div class="actions">
+      <button onclick="like(this)">👍 Like</button>
+      <button onclick="comment()">💬 Comment</button>
+      <button onclick="share()">↗ Share</button>
+      <button onclick="save()">⭐ Save</button>
+    </div>
+  </div>  <div id="posts"></div>
+</div><!-- UPLOAD --><div id="upload" class="page">
+  <div class="card">
+    <h3>Create Post</h3>
+    <textarea id="postText" placeholder="What's on your mind?"></textarea>
+    <input type="file" id="postMedia" accept="image/*,video/*" />
+    <button class="btn" onclick="addPost()">Post</button>
+  </div>
+</div><!-- CHAT --><div id="chat" class="page">
+  <div class="card">Chat coming soon (V2)</div>
+</div><!-- PROFILE --><div id="profile" class="page">
+  <div class="card">
+    <h3>Your Profile</h3>
+    <p>Name: PNGStyle User</p>
+    <p>Status: Active</p>
+  </div>
+</div><footer>© 2026 PNGStyle</footer><script>
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
 
-<body>
+  function like(btn) {
+    btn.innerText = '👍 Liked';
+  }
+  function comment() { alert('Comments coming in V2'); }
+  function share() { alert('Shared!'); }
+  function save() { alert('Saved!'); }
 
-<header>PNGStyle</header>
+  function addPost() {
+    const text = document.getElementById('postText').value;
+    const file = document.getElementById('postMedia').files[0];
+    if (!text && !file) return alert('Add text or media');
 
-<nav>
-<button onclick="openPage('feed')">Home</button>
-<button onclick="openPage('upload')">Post</button>
-<button onclick="openPage('profile')">Profile</button>
-<button onclick="openPage('login')">Login</button>
-</nav>
+    const post = document.createElement('div');
+    post.className = 'card post';
+    post.innerHTML = `<div class="post-header">You</div><div>${text}</div>`;
 
-<!-- FEED -->
-<div id="feed" class="page active">
+    if (file) {
+      const url = URL.createObjectURL(file);
+      if (file.type.startsWith('image')) post.innerHTML += `<img src="${url}">`;
+      if (file.type.startsWith('video')) post.innerHTML += `<video controls src="${url}"></video>`;
+    }
 
-<div class="story-row">
-<div class="story">Your Story</div>
-<div class="story">PNG Life</div>
-<div class="story">Market</div>
-<div class="story">Jobs</div>
-</div>
+    post.innerHTML += `<div class="actions">
+      <button onclick="like(this)">👍 Like</button>
+      <button onclick="comment()">💬 Comment</button>
+      <button onclick="share()">↗ Share</button>
+      <button onclick="save()">⭐ Save</button>
+    </div>`;
 
-<div class="card">
-<b>PNGStyle</b>
-<p>Welcome to PNGStyle 🇵🇬 – Facebook-style PNG community.</p>
-<div class="actions">
-<span>👍 Like</span>
-<span>💬 Comment</span>
-<span>↗ Share</span>
-</div>
-</div>
-
-<div class="ad">Banner Ad (Monetization)</div>
-
-<div class="card">
-<b>PNG User</b>
-<img src="https://via.placeholder.com/400x200">
-<p>Life in Papua New Guinea ❤️</p>
-<div class="actions">
-<span>👍 Like</span>
-<span>💬 Comment</span>
-<span>↗ Share</span>
-</div>
-</div>
-
-</div>
-
-<!-- UPLOAD -->
-<div id="upload" class="page">
-<div class="card">
-<h3>Create Post</h3>
-<input type="file">
-<textarea placeholder="What's on your mind?"></textarea>
-<button class="btn">Post</button>
-</div>
-</div>
-
-<!-- PROFILE -->
-<div id="profile" class="page">
-<div class="card">
-<h3>Profile</h3>
-<p>Name: PNG User</p>
-<p>Followers: 0</p>
-<p>Following: 0</p>
-<button class="btn">Edit Profile</button>
-</div>
-
-<div class="card">
-<h4>Earnings</h4>
-<p>Views: 0</p>
-<p>Revenue: K0.00</p>
-</div>
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="page">
-<div class="card">
-<h3>Login</h3>
-<input placeholder="Email">
-<input placeholder="Password" type="password">
-<button class="btn">Login</button>
-<hr>
-<h4>Sign Up</h4>
-<input placeholder="Name">
-<input placeholder="Email">
-<input placeholder="Password" type="password">
-<button class="btn">Create Account</button>
-</div>
-</div>
-
-<script>
-function openPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-}
-</script>
-
-</body>
-  </html>
+    document.getElementById('posts').prepend(post);
+    document.getElementById('postText').value = '';
+    document.getElementById('postMedia').value = '';
+    showPage('feed', document.querySelectorAll('nav button')[0]);
+  }
+</script></body>
+</html>
