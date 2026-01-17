@@ -1,27 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PNGStyle</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#f4f4f4}
-header{background:#0a5cff;color:white;padding:15px;text-align:center;font-size:22px}
-nav{display:flex;background:#fff;border-bottom:1px solid #ccc}
-nav button{flex:1;padding:12px;border:none;background:none;font-size:16px}
-section{display:none;padding:15px}
-section.active{display:block}
-.card{background:white;padding:15px;margin-bottom:12px;border-radius:8px}
-footer{background:#222;color:#ccc;text-align:center;padding:10px;font-size:14px}
-</style>
-
-<script>
-function show(id){
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f2f2f2;
 }
-</script>
+header{
+  background:#0a5cff;
+  color:white;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+nav{
+  display:flex;
+  background:#ffffff;
+  border-bottom:1px solid #ccc;
+}
+nav button{
+  flex:1;
+  padding:12px;
+  border:none;
+  background:none;
+  font-size:14px;
+}
+nav button:hover{
+  background:#eee;
+}
+section{
+  display:none;
+  padding:15px;
+}
+section.active{
+  display:block;
+}
+.card{
+  background:white;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+.card img, video{
+  width:100%;
+  border-radius:6px;
+}
+.btn{
+  padding:6px 10px;
+  margin-right:5px;
+  border:none;
+  border-radius:5px;
+  background:#0a5cff;
+  color:white;
+  font-size:12px;
+}
+input, textarea{
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+  margin-bottom:8px;
+}
+.footer-ad{
+  text-align:center;
+  padding:10px;
+  background:#eee;
+  color:#555;
+  border:1px dashed #aaa;
+}
+</style>
 </head>
 
 <body>
@@ -29,43 +82,96 @@ document.getElementById(id).classList.add("active");
 <header>PNGStyle</header>
 
 <nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('videos')">Videos</button>
-<button onclick="show('market')">Market</button>
-<button onclick="show('jobs')">Jobs</button>
-<button onclick="show('about')">About</button>
+<button onclick="openPage('home')">Home</button>
+<button onclick="openPage('feed')">Feed</button>
+<button onclick="openPage('upload')">Upload</button>
+<button onclick="openPage('chat')">Chat</button>
+<button onclick="openPage('profile')">Profile</button>
 </nav>
 
+<!-- HOME -->
 <section id="home" class="active">
 <div class="card">
-<h3>Welcome to PNGStyle</h3>
-<p>Independent PNG community app.</p>
+<h3>Welcome to PNGStyle 🇵🇬</h3>
+<p>Your independent PNG app for posts, videos, jobs & market.</p>
 </div>
-<div class="card">🔸 Ad Space (Monetization)</div>
+<div class="footer-ad">Banner Ad Placeholder</div>
 </section>
 
-<section id="videos">
-<div class="card"><h3>Videos</h3>
-<p>Upload & watch PNG content.</p></div>
-<div class="card">🔸 Ad Space</div>
+<!-- FEED -->
+<section id="feed">
+<div class="card">
+<h4>PNG Lifestyle Post</h4>
+<img src="https://via.placeholder.com/400x200">
+<p>Traditional culture and modern style 🇵🇬</p>
+<button class="btn" onclick="like()">Like</button>
+<button class="btn" onclick="comment()">Comment</button>
+<button class="btn" onclick="share()">Share</button>
+</div>
+
+<div class="card">
+<h4>PNG Video</h4>
+<video controls>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+</video>
+<p>Local content video</p>
+<button class="btn" onclick="like()">Like</button>
+<button class="btn" onclick="comment()">Comment</button>
+</div>
+
+<div class="footer-ad">Interstitial Ad Placeholder</div>
 </section>
 
-<section id="market">
-<div class="card"><h3>Marketplace</h3>
-<p>Buy & sell locally.</p></div>
+<!-- UPLOAD -->
+<section id="upload">
+<div class="card">
+<h4>Create Post</h4>
+<input type="file">
+<textarea placeholder="Write something..."></textarea>
+<button class="btn">Post</button>
+</div>
+<div class="footer-ad">Upload Monetization Placeholder</div>
 </section>
 
-<section id="jobs">
-<div class="card"><h3>Jobs</h3>
-<p>Find PNG job opportunities.</p></div>
+<!-- CHAT -->
+<section id="chat">
+<div class="card">
+<h4>Messages</h4>
+<p><b>John:</b> Hello 👋</p>
+<p><b>You:</b> Hi!</p>
+<input placeholder="Type message">
+<button class="btn">Send</button>
+</div>
 </section>
 
-<section id="about">
-<div class="card"><h3>About PNGStyle</h3>
-<p>Built in PNG, for PNG, worldwide.</p></div>
+<!-- PROFILE -->
+<section id="profile">
+<div class="card">
+<h4>User Profile</h4>
+<p>Name: PNG User</p>
+<p>Followers: 120</p>
+<p>Following: 80</p>
+<button class="btn">Edit Profile</button>
+<button class="btn">Logout</button>
+</div>
+
+<div class="card">
+<h4>Earnings</h4>
+<p>Views: 1,240</p>
+<p>Clicks: 210</p>
+<p>Revenue: K0.00 (demo)</p>
+</div>
 </section>
 
-<footer>© 2026 PNGStyle</footer>
+<script>
+function openPage(page){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+}
+function like(){ alert("Liked 👍"); }
+function comment(){ alert("Comment feature (V2)"); }
+function share(){ alert("Share feature (V2)"); }
+</script>
 
 </body>
   </html>
