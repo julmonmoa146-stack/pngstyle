@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PNGStyle</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#f4f4f4}
+header{background:#0a5cff;color:white;padding:15px;text-align:center;font-size:22px}
+nav{display:flex;background:#fff;border-bottom:1px solid #ccc}
+nav button{flex:1;padding:12px;border:none;background:none;font-size:16px}
+section{display:none;padding:15px}
+section.active{display:block}
+.card{background:white;padding:15px;margin-bottom:12px;border-radius:8px}
+footer{background:#222;color:#ccc;text-align:center;padding:10px;font-size:14px}
+</style>
+
+<script>
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+</script>
+</head>
+
+<body>
+
+<header>PNGStyle</header>
+
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('videos')">Videos</button>
+<button onclick="show('market')">Market</button>
+<button onclick="show('jobs')">Jobs</button>
+<button onclick="show('about')">About</button>
+</nav>
+
+<section id="home" class="active">
+<div class="card">
+<h3>Welcome to PNGStyle</h3>
+<p>Independent PNG community app.</p>
+</div>
+<div class="card">🔸 Ad Space (Monetization)</div>
+</section>
+
+<section id="videos">
+<div class="card"><h3>Videos</h3>
+<p>Upload & watch PNG content.</p></div>
+<div class="card">🔸 Ad Space</div>
+</section>
+
+<section id="market">
+<div class="card"><h3>Marketplace</h3>
+<p>Buy & sell locally.</p></div>
+</section>
+
+<section id="jobs">
+<div class="card"><h3>Jobs</h3>
+<p>Find PNG job opportunities.</p></div>
+</section>
+
+<section id="about">
+<div class="card"><h3>About PNGStyle</h3>
+<p>Built in PNG, for PNG, worldwide.</p></div>
+</section>
+
+<footer>© 2026 PNGStyle</footer>
+
+</body>
+  </html>
