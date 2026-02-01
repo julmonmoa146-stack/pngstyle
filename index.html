@@ -1,114 +1,142 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PNGStyle</title>
-  <style>
-    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-    body { margin: 0; background: #f0f2f5; }/* Header */
-header { background: #1877f2; color: #fff; padding: 12px; text-align: center; font-size: 20px; font-weight: bold; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNGStyle V3 – Social & Market App with Monetization</title><!-- Firebase --><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script><!-- AppNext Ads --><script src="https://cdn.appnext.com/ad.js"></script><style>
+body{margin:0;font-family:Arial,sans-serif;background:#f0f2f5}
+header{background:#1877f2;color:#fff;padding:14px;text-align:center;font-size:20px}
+nav{display:flex;background:#fff;border-bottom:1px solid #ccc}
+nav button{flex:1;padding:10px;border:none;background:#fff;font-weight:bold}
+section{display:none;padding:12px}
+section.active{display:block}
+.card{background:#fff;padding:10px;border-radius:8px;margin-bottom:10px}
+img,video{max-width:100%;border-radius:8px}
+input,textarea,button{width:100%;margin-top:6px;padding:8px}
+.actions button{width:24%;font-size:12px}
+.ad-banner{background:#eee;text-align:center;padding:8px;margin:10px 0;border:1px dashed #aaa;color:#555}
+small{color:#777}
+</style></head>
+<body><header>PNGStyle 🇵🇬<br><small>Connect • Share • Earn</small></header><nav>
+<button onclick="show('feed')">Home</button>
+<button onclick="show('reels')">Reels</button>
+<button onclick="show('chat')">Chat</button>
+<button onclick="show('market')">Market</button>
+<button onclick="show('profile')">Profile</button>
+</nav><!-- FEED --><section id="feed" class="active">
+<div class="card">
+<input type="file" id="postImg">
+<textarea id="postText" placeholder="What's happening in PNG?"></textarea>
+<button onclick="post()">Post</button>
+</div>
+<div class="ad-banner" id="feedBanner">Banner Ad</div>
+<div id="posts"></div>
+</section><!-- REELS --><section id="reels">
+<div class="card">
+<input type="file" accept="video/*" id="reelVideo">
+<button onclick="uploadReel()">Upload Reel</button>
+</div>
+<div class="ad-banner" id="reelBanner">Banner Ad</div>
+<div id="reelBox"></div>
+</section><!-- CHAT --><section id="chat">
+<div class="card">
+<textarea id="msg" placeholder="Message..."></textarea>
+<button onclick="sendMsg()">Send</button>
+</div>
+<div class="ad-banner" id="chatBanner">Banner Ad</div>
+<div id="chatBox"></div>
+</section><!-- MARKET --><section id="market">
+<div class="card">
+<input id="item" placeholder="Item name">
+<input id="price" placeholder="Price K">
+<input type="file" id="itemImg">
+<button onclick="sell()">Sell</button>
+</div>
+<div class="ad-banner" id="marketBanner">Banner Ad</div>
+<div id="marketBox"></div>
+</section><!-- PROFILE --><section id="profile">
+<div class="card">
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="signup()">Sign Up</button>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+<button onclick="pay(5)">Subscribe Premium K5</button>
+</div>
+</section><script>
+// 🔥 FIREBASE CONFIG - REPLACE WITH YOUR KEYS
+const firebaseConfig={apiKey:"YOUR_API_KEY",authDomain:"YOUR_PROJECT.firebaseapp.com",projectId:"YOUR_PROJECT",storageBucket:"YOUR_PROJECT.appspot.com",messagingSenderId:"ID",appId:"ID"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+const st=firebase.storage();
 
-/* Nav */
-nav { display: flex; justify-content: space-around; background: #fff; border-bottom: 1px solid #ddd; }
-nav button { flex: 1; padding: 10px; border: none; background: none; font-weight: bold; }
-nav button.active { color: #1877f2; border-bottom: 2px solid #1877f2; }
+// NAVIGATION
+function show(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 
-/* Pages */
-.page { display: none; padding: 12px; }
-.page.active { display: block; }
+// AUTH
+function signup(){auth.createUserWithEmailAndPassword(email.value,pass.value)}
+function login(){auth.signInWithEmailAndPassword(email.value,pass.value)}
+function logout(){auth.signOut()}
 
-/* Cards */
-.card { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+// POSTS
+function post(){
+const f=postImg.files[0];
+if(!f && !postText.value)return;
+const r=f?st.ref('posts/'+Date.now()):null;
+const up=f?r.put(f).then(()=>r.getDownloadURL()):Promise.resolve('');
+up.then(u=>db.collection('posts').add({t:postText.value,i:u,likes:0,time:Date.now()}));
+postText.value='';postImg.value='';
+}
+db.collection('posts').orderBy('time','desc').onSnapshot(s=>{
+posts.innerHTML='';s.forEach(d=>posts.innerHTML+=`<div class='card'>${d.data().i?`<img src='${d.data().i}'>`:''}<p>${d.data().t}</p><div class='actions'><button onclick="like('${d.id}')">❤️ Like</button><button onclick="showComments('${d.id}')">💬 Comment</button><button>🔗 Share</button><button>⭐ Save</button></div><div id='comments-${d.id}'></div></div>`)
+});
+function like(id){db.collection('posts').doc(id).update({likes:firebase.firestore.FieldValue.increment(1)})}
 
-/* Post */
-.post-header { font-weight: bold; margin-bottom: 6px; }
-.post img, .post video { width: 100%; border-radius: 6px; margin-top: 8px; }
+// COMMENTS
+function showComments(postId){
+const cBox=document.getElementById('comments-'+postId);
+cBox.innerHTML+='<input placeholder="Comment..." id="commentInput-'+postId+'"><button onclick="addComment(\''+postId+'\')">Post</button>';
+db.collection('comments').where('post','==',postId).orderBy('time','asc').onSnapshot(s=>{let html='';s.forEach(d=>html+=`<p><b>${d.data().user}:</b> ${d.data().text}</p>`);cBox.innerHTML+=html;});
+}
+function addComment(postId){
+const val=document.getElementById('commentInput-'+postId).value;
+db.collection('comments').add({post:postId,user:auth.currentUser.uid,text:val,time:Date.now()});
+}
 
-.actions { display: flex; justify-content: space-around; margin-top: 8px; }
-.actions button { border: none; background: none; font-weight: bold; color: #555; }
+// REELS
+function uploadReel(){
+const f=reelVideo.files[0];
+if(!f)return;
+const r=st.ref('reels/'+Date.now());
+r.put(f).then(()=>r.getDownloadURL()).then(u=>db.collection('reels').add({v:u,time:Date.now()}));
+}
+db.collection('reels').orderBy('time','desc').onSnapshot(s=>{reelBox.innerHTML='';s.forEach(d=>reelBox.innerHTML+=`<video src='${d.data().v}' controls autoplay muted loop></video>`)});
 
-/* Upload */
-input, textarea { width: 100%; padding: 8px; margin-bottom: 8px; }
-.btn { background: #1877f2; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 6px; }
+// CHAT
+function sendMsg(){db.collection('chat').add({m:msg.value,time:Date.now()});msg.value=''}
+db.collection('chat').orderBy('time').onSnapshot(s=>{chatBox.innerHTML='';s.forEach(d=>chatBox.innerHTML+=`<div class='card'>${d.data().m}</div>`)});
 
-/* Footer */
-footer { text-align: center; font-size: 12px; color: #777; padding: 10px; }
+// MARKET
+function sell(){
+const f=itemImg.files[0];
+if(!f)return;
+const r=st.ref('market/'+Date.now());
+r.put(f).then(()=>r.getDownloadURL()).then(u=>db.collection('market').add({n:item.value,p:price.value,i:u}));
+item.value='';price.value='';itemImg.value='';
+}
+db.collection('market').onSnapshot(s=>{marketBox.innerHTML='';s.forEach(d=>marketBox.innerHTML+=`<div class='card'><img src='${d.data().i}'><b>${d.data().n}</b><p>K${d.data().p}</p></div>`)});
 
-  </style>
-</head>
-<body><header>PNGStyle</header><nav>
-  <button class="active" onclick="showPage('feed', this)">Home</button>
-  <button onclick="showPage('upload', this)">Upload</button>
-  <button onclick="showPage('chat', this)">Chat</button>
-  <button onclick="showPage('profile', this)">Profile</button>
-</nav><!-- FEED --><div id="feed" class="page active">
-  <div class="card post">
-    <div class="post-header">PNGStyle Admin</div>
-    <div>Welcome to PNGStyle 🇵🇬 – your independent PNG community app.</div>
-    <img src="https://via.placeholder.com/400x200" />
-    <div class="actions">
-      <button onclick="like(this)">👍 Like</button>
-      <button onclick="comment()">💬 Comment</button>
-      <button onclick="share()">↗ Share</button>
-      <button onclick="save()">⭐ Save</button>
-    </div>
-  </div>  <div id="posts"></div>
-</div><!-- UPLOAD --><div id="upload" class="page">
-  <div class="card">
-    <h3>Create Post</h3>
-    <textarea id="postText" placeholder="What's on your mind?"></textarea>
-    <input type="file" id="postMedia" accept="image/*,video/*" />
-    <button class="btn" onclick="addPost()">Post</button>
-  </div>
-</div><!-- CHAT --><div id="chat" class="page">
-  <div class="card">Chat coming soon (V2)</div>
-</div><!-- PROFILE --><div id="profile" class="page">
-  <div class="card">
-    <h3>Your Profile</h3>
-    <p>Name: PNGStyle User</p>
-    <p>Status: Active</p>
-  </div>
-</div><footer>© 2026 PNGStyle</footer><script>
-  function showPage(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+// FOLLOW SYSTEM
+function followUser(uid){db.collection('follows').add({from:auth.currentUser.uid,to:uid,time:Date.now()});alert('Followed')}
 
-  function like(btn) {
-    btn.innerText = '👍 Liked';
-  }
-  function comment() { alert('Comments coming in V2'); }
-  function share() { alert('Shared!'); }
-  function save() { alert('Saved!'); }
+// PAYMENTS
+function pay(amount){window.open(`https://your-payment-link.com?amount=${amount}`,'_blank');db.collection("subscriptions").add({user:auth.currentUser.uid,type:'premium',expires:Date.now()+30*24*60*60*1000});}
 
-  function addPost() {
-    const text = document.getElementById('postText').value;
-    const file = document.getElementById('postMedia').files[0];
-    if (!text && !file) return alert('Add text or media');
-
-    const post = document.createElement('div');
-    post.className = 'card post';
-    post.innerHTML = `<div class="post-header">You</div><div>${text}</div>`;
-
-    if (file) {
-      const url = URL.createObjectURL(file);
-      if (file.type.startsWith('image')) post.innerHTML += `<img src="${url}">`;
-      if (file.type.startsWith('video')) post.innerHTML += `<video controls src="${url}"></video>`;
-    }
-
-    post.innerHTML += `<div class="actions">
-      <button onclick="like(this)">👍 Like</button>
-      <button onclick="comment()">💬 Comment</button>
-      <button onclick="share()">↗ Share</button>
-      <button onclick="save()">⭐ Save</button>
-    </div>`;
-
-    document.getElementById('posts').prepend(post);
-    document.getElementById('postText').value = '';
-    document.getElementById('postMedia').value = '';
-    showPage('feed', document.querySelectorAll('nav button')[0]);
-  }
+// APPNEXT ADS
+Appnext.loadBanner({placementId:'YOUR_SMALL_BANNER_ID',containerId:'feedBanner'});
+Appnext.loadBanner({placementId:'YOUR_SMALL_BANNER_ID',containerId:'reelBanner'});
+Appnext.loadBanner({placementId:'YOUR_SMALL_BANNER_ID',containerId:'chatBanner'});
+Appnext.loadBanner({placementId:'YOUR_SMALL_BANNER_ID',containerId:'marketBanner'});
+Appnext.loadInterstitial({placementId:'YOUR_INTERSTITIAL_ID'});
 </script></body>
-</html>
+  </html>
